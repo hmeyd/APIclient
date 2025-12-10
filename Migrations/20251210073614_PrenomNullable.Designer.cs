@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClientApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251208132704_FixClientRelation")]
-    partial class FixClientRelation
+    [Migration("20251210073614_PrenomNullable")]
+    partial class PrenomNullable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,7 +46,6 @@ namespace ClientApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Prenom")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Telephone")
@@ -85,6 +84,27 @@ namespace ClientApi.Migrations
                     b.HasIndex("ClientId");
 
                     b.ToTable("Commandes");
+                });
+
+            modelBuilder.Entity("ClientApi.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("ClientApi.Models.Commande", b =>

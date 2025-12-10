@@ -2,10 +2,9 @@ using Microsoft.AspNetCore.Mvc; // Pour ControllerBase, ApiController, IActionRe
 using ClientApi.Models;          // Pour Commande et Client
 using ClientApi.Services;        // Pour ICommandeService
 using System.Collections.Generic; // Pour IEnumerable<>
+using Microsoft.AspNetCore.Authorization;
 
-
-
-[ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class CommandeController : ControllerBase
 {
@@ -16,7 +15,7 @@ public class CommandeController : ControllerBase
         _commandeService = commandeService;
     }
 
-    [HttpGet]
+    [HttpGet("AfficherAll")]
     public ActionResult<IEnumerable<Commande>> AfficherAll()
     {
         var commandes = _commandeService.GetAll();
@@ -31,21 +30,19 @@ public class CommandeController : ControllerBase
         return Ok(commande);
     }
 
-    [HttpPost]
-    public ActionResult<Commande> Create(Commande commande)
-    {
+    [HttpPost("Create")]
+    public IActionResult Create([FromBody] Commande commande)
+    {   
         var createdCommande = _commandeService.Create(commande);
-        if (createdCommande == null)
-            return BadRequest("Le client n'existe pas.");
         return Ok(createdCommande);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(int id, CommandeUpdateDto updatedCommande)
+    public IActionResult Update([FromRoute]int id, [FromBody] CommandeUpdateDto updatedCommande)
     {
         var success = _commandeService.Update(id, updatedCommande);
         if (!success) return NotFound();
-        return NoContent();
+        return Ok(updatedCommande);
     }
 
 
@@ -55,6 +52,6 @@ public class CommandeController : ControllerBase
     {
         var success = _commandeService.Delete(id);
         if (!success) return NotFound();
-        return NoContent();
+        return Ok(new { Message = "le commande a été bien supprimée" });
     }
 }
