@@ -28,7 +28,8 @@ public class UserController : ControllerBase
         var user = new User
         {
             Email = dto.Email,
-            PasswordHash = _authService.HashPassword(dto.Password)
+            PasswordHash = _authService.HashPassword(dto.Password),
+            Role = dto.Role
         };
 
         _context.Users.Add(user);

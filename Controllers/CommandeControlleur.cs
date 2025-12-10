@@ -14,14 +14,14 @@ public class CommandeController : ControllerBase
     {
         _commandeService = commandeService;
     }
-
+    [Authorize(Roles = "User,Admin")]
     [HttpGet("AfficherAll")]
     public ActionResult<IEnumerable<Commande>> AfficherAll()
     {
         var commandes = _commandeService.GetAll();
         return Ok(commandes);
     }
-
+    [Authorize(Roles = "User,Admin")]
     [HttpGet("{id}")]
     public ActionResult<Commande> Afficher(int id)
     {
@@ -29,14 +29,14 @@ public class CommandeController : ControllerBase
         if (commande == null) return NotFound();
         return Ok(commande);
     }
-
+    [Authorize(Roles = "Admin")]
     [HttpPost("Create")]
     public IActionResult Create([FromBody] Commande commande)
     {   
         var createdCommande = _commandeService.Create(commande);
         return Ok(createdCommande);
     }
-
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public IActionResult Update([FromRoute]int id, [FromBody] CommandeUpdateDto updatedCommande)
     {
@@ -46,8 +46,8 @@ public class CommandeController : ControllerBase
     }
 
 
-
-     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("{id}")]
     public IActionResult Supprimer(int id)
     {
         var success = _commandeService.Delete(id);
