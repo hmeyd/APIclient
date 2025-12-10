@@ -26,6 +26,14 @@ public class CommandeService : ICommandeService
 
     public Commande Create(Commande commande)
     {
+        var existing = _context.Clients.Find(commande.ClientId);
+        
+            if (existing == null)
+            {
+                throw new InvalidOperationException($"Client with ID {commande.ClientId} not found.");
+            }
+
+        
         _context.Commandes.Add(commande);
         _context.SaveChanges();
         return commande;

@@ -4,9 +4,12 @@ using ClientApi.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Authorization;
+
+
 namespace ClientApi.Controllers
 {
-    [ApiController]
+    [Authorize] 
     [Route("api/[controller]")]
     public class ClientController : ControllerBase
     {
@@ -16,8 +19,8 @@ namespace ClientApi.Controllers
         {
             _clientService = clientService;
         }
-
-        [HttpGet]
+    
+        [HttpGet("AfficherAll")]
         public async Task<ActionResult<IEnumerable<Client>>> AfficherAll()
         {
             var clients = _clientService.GetAll();
@@ -32,19 +35,19 @@ namespace ClientApi.Controllers
             return Ok(client);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Client>> Create(Client client)
+        [HttpPost("Create")]
+        public IActionResult Create([FromBody] Client client)
         {
             var createdClient = _clientService.Create(client);
             return Ok(createdClient);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Client updatedClient)
+        public IActionResult Update([FromRoute] int id, [FromBody] Client updatedClient)
         {
             var success = _clientService.Update(id, updatedClient);
             if (!success) return NotFound();
-            return NoContent();
+            return Ok(updatedClient);
         }
 
         [HttpDelete("{id}")]
@@ -52,7 +55,7 @@ namespace ClientApi.Controllers
         {
             var success = _clientService.Delete(id);
             if (!success) return NotFound();
-            return NoContent();
+            return Ok(new { message = "Client supprimé avec succès." });
         }
 
     }
