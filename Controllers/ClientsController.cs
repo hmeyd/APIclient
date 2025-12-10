@@ -9,8 +9,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ClientApi.Controllers
 {
-    [Authorize] 
+    
     [Route("api/[controller]")]
+   
     public class ClientController : ControllerBase
     {
         private readonly IClientService _clientService;
@@ -19,38 +20,44 @@ namespace ClientApi.Controllers
         {
             _clientService = clientService;
         }
-    
+
+        [Authorize(Roles = "User, Admin")]
         [HttpGet("AfficherAll")]
-        public async Task<ActionResult<IEnumerable<Client>>> AfficherAll()
+        
+        public ActionResult<IEnumerable<Client>> AfficherAll()
         {
             var clients = _clientService.GetAll();
             return Ok(clients);
         }
-
+        [Authorize(Roles = "User, Admin")]
         [HttpGet("{id}")]
+       
         public async Task<ActionResult<Client>> Afficher(int id)
         {
             var client = _clientService.GetById(id);
             if (client == null) return NotFound();
             return Ok(client);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("Create")]
+       
         public IActionResult Create([FromBody] Client client)
         {
             var createdClient = _clientService.Create(client);
             return Ok(createdClient);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
+        
         public IActionResult Update([FromRoute] int id, [FromBody] Client updatedClient)
         {
             var success = _clientService.Update(id, updatedClient);
             if (!success) return NotFound();
             return Ok(updatedClient);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
+        
         public IActionResult Supprimer(int id)
         {
             var success = _clientService.Delete(id);

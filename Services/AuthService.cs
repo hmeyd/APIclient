@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using ClientApi.Models;
 
+
 public class AuthService
 {
     private readonly string _jwtKey;
@@ -39,7 +40,8 @@ public class AuthService
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email)
+            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim(ClaimTypes.Role, user.Role)
         };
 
         var token = new JwtSecurityToken(
